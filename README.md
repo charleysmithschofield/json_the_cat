@@ -17,4 +17,5 @@
   5b. If no error, log the body and the typeof body (should be a string type).
 6. Use JSON.parse to convert the JSON string into an object.
 7. Check if data array is empty, return 'Breed not found.'
-  7a. If breed is found, access the first entry in the data array and print out the description for the user.
+
+    7a. If breed is found, access the first entry in the data array and print out the description for the user.
