@@ -1,39 +1,35 @@
-
-
 // Require the request library
 const request = require('request');
 
 // Define the API endpoint URL
 const apiUrl = 'https://api.thecatapi.com/v1/breeds/search?q=';
 
-// Get the breed name from command-line arguments
-const breedName = process.argv[2];
+// Define the fetchBreedDescription function
+const fetchBreedDescription = function(breedName, callback) {
+  // Construct the API endpoint URL with the breed name
+  const apiURLWithBreed = apiUrl + breedName;
 
-// Construct the API endpoint URL with the breed name
-const apiURLWithBreed = apiUrl + breedName;
-
-// Use the `request` library to make a GET request to the API endpoint
-request(apiURLWithBreed, (error, response, body) => {
-  // if there is an error or if the response statusCode is not 200 (200 = everything's ok)
-  if (error || response.statusCode !== 200) {
-    // print the error
-    console.log('Error:', error || `Status Code: ${response.statusCode}`);
-  } else {
-    // if no error, log the body and the typeof body
-    console.log('Body:', body);
-    console.log('Type of Body:', typeof body); // its a string type
-
-    // Use JSON.parse to convert the JSON string into an object
-    const data = JSON.parse(body);
-    console.log(data);
-    console.log(typeof data);
-
-    // Check if data array is empty, return 'Breed not found.'
-    if (data.length === 0) {
-      console.log('Breed not found.');
+  // Use the `request` library to make a GET request to the API endpoint
+  request(apiURLWithBreed, (error, response, body) => {
+    // if there is an error or if the response statusCode is not 200 (200 = everything's ok)
+    if (error || response.statusCode !== 200) {
+      // Pass error and null as arguments to the callback function
+      callback(error || `Status Code: ${response.statusCode}`, null);
     } else {
-      // Access the first entry in the data array and print out the description for the user.
-      console.log('Description of the first entry:', data[0].description);
+      // Parse the JSON string into an object
+      const data = JSON.parse(body);
+      
+      // Check if data array is empty
+      if (data.length === 0) {
+        // Pass null for error and 'Breed not found.' as the description to the callback function
+        callback('Breed not found.', null);
+      } else {
+        // Pass null for error and the description from the data as the description to the callback function
+        callback(null, data[0].description);
+      }
     }
-  }
-});
+  });
+};
+
+// Export the fetchBreedDescription function
+module.exports = { fetchBreedDescription };
